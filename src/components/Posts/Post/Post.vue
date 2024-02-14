@@ -1,0 +1,30 @@
+<template>
+  <div class="post">
+    <div><strong>Title:</strong> {{ post.title }}</div>
+    <div><strong>Description:</strong> {{ post.body }}</div>
+    <div class="post-footer">
+      <custom-button type="button" @click="handleDelete">Delete</custom-button>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: {
+    post: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    handleDelete() {
+      this.$emit('onDeletePost', this.post);
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
