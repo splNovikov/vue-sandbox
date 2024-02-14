@@ -1,22 +1,23 @@
 <template>
   <form @submit="handleSubmit" @submit.prevent>
     <h3>Add Post</h3>
-    <input
+    <custom-input
         v-model="post.title"
-        class="input"
-        type="text"
-        placeholder="Title"/>
-    <input
+        placeholder="Title"
+    />
+    <custom-input
         v-model="post.body"
-        class="input"
-        type="text"
-        placeholder="Description"/>
+        placeholder="Description"
+    />
     <custom-button type="submit">Add Post</custom-button>
   </form>
 </template>
 
 <script>
+import CustomInput from "@/components/ui/CustomInput/CustomInput.vue";
+
 export default {
+  components: {CustomInput},
   data() {
     return {
       post: {
@@ -33,10 +34,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.input {
-  border: 1px solid teal;
-  padding: 5px;
-}
-</style>
