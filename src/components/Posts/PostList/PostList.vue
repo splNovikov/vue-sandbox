@@ -1,10 +1,13 @@
 <template>
   <div v-if="posts.length > 0">
-    <post
-        v-for="post in posts"
-        :post="post"
-        @onDeletePost="handleDeletePost"
-    />
+    <transition-group name="post-list">
+      <post
+          v-for="post in posts"
+          :post="post"
+          @onDeletePost="handleDeletePost"
+          :key="post.id"
+      />
+    </transition-group>
   </div>
   <h5 v-else>No Posts</h5>
 </template>
@@ -29,10 +32,22 @@ export default {
 }
 </script>
 
-<style>
-.post {
-  margin: 10px 0 0 0;
-  padding: 15px;
-  border: 1px solid teal;
+<style scoped>
+.post-list-item {
+
+}
+.post-list-enter-active,
+.post-list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.post-list-enter-from,
+.post-list-leave-to {
+  opacity: 0;
+  transform: translateX(130px);
+}
+
+.post-list-move {
+  transition: transform 0.3s ease;
 }
 </style>
