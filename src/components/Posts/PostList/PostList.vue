@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <h3>Posts</h3>
+  <div v-if="posts.length > 0">
     <post
         v-for="post in posts"
         :post="post"
         @onDeletePost="handleDeletePost"
     />
   </div>
+  <h5 v-else>No Posts</h5>
 </template>
 
 <script>
