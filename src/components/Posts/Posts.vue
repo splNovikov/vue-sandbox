@@ -15,25 +15,21 @@
       />
     </div>
 
-    <custom-pagination
-        :pages="totalPages"
-        :selectedPage="page"
-        @onChangePage="changePage"
-    />
-
     <custom-dialog v-model:show="dialogVisible">
       <add-post-form
           @onAddPost="handleAddPost"
       />
     </custom-dialog>
 
-    <div v-if="isPostsLoading">Loading Posts...</div>
     <post-list
-        v-else
         :posts="sortedAndSearchedPosts"
         @onDeletePost="handleDeletePost"
     />
+    <div v-if="isPostsLoading">Loading Posts...</div>
 
+    <div ref="observer" class="observer">
+
+    </div>
   </div>
 </template>
 
@@ -64,7 +60,7 @@ export default {
       isPostsLoading: false,
       selectedSort: "",
       searchQueryText: "",
-      page: 1,
+      page: 0,
       limit: 10,
       totalPages: 0,
       sortOptions: [
@@ -84,9 +80,10 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    async fetchPosts() {
-      this.isPostsLoading = true;
+    async loadMorePosts() {
       try {
+        this.page += 1;
+        this.isPostsLoading = true;
         const {data, headers} = await axios.get('https://jsonplaceholder.typicode.com/posts', {
           params: {
             _limit: this.limit,
@@ -94,20 +91,28 @@ export default {
           }
         });
         this.totalPages = Math.ceil(headers['x-total-count'] / this.limit);
-        this.posts = data;
+        this.posts = [...this.posts,...data];
       } catch (error) {
         alert(error);
       } finally {
         this.isPostsLoading = false;
       }
     },
-    changePage(pageNum) {
-      this.page = pageNum;
-      this.fetchPosts();
-    }
   },
   mounted() {
-    this.fetchPosts();
+    this.loadMorePosts();
+
+    const options = {
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+    const callback = (entries, observer) => {
+      if (entries[0].isIntersecting && this.page < this.totalPages) {
+        this.loadMorePosts();
+      }
+    }
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPosts() {
@@ -133,5 +138,10 @@ export default {
 .controls {
   display: flex;
   justify-content: space-between;
+}
+
+.observer {
+  height: 30px;
+  background-color: antiquewhite;
 }
 </style>
