@@ -1,5 +1,6 @@
 <template>
   <div class="post">
+    <div>{{ post.id }}</div>
     <div><strong>Title:</strong> {{ post.title }}</div>
     <div><strong>Description:</strong> {{ post.body }}</div>
     <div class="post-footer">

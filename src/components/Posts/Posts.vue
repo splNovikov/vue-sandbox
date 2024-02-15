@@ -2,6 +2,11 @@
   <div class="posts">
     <h2>Posts</h2>
 
+    <custom-input
+        v-model="searchQueryText"
+        placeholder="Search"
+    />
+
     <div class="controls">
       <custom-button @click="showDialog">Add Post</custom-button>
       <custom-select
@@ -9,6 +14,12 @@
           :options="sortOptions"
       />
     </div>
+
+    <custom-pagination
+        :pages="totalPages"
+        :selectedPage="page"
+        @onChangePage="changePage"
+    />
 
     <custom-dialog v-model:show="dialogVisible">
       <add-post-form
@@ -19,9 +30,10 @@
     <div v-if="isPostsLoading">Loading Posts...</div>
     <post-list
         v-else
-        :posts="sortedPosts"
+        :posts="sortedAndSearchedPosts"
         @onDeletePost="handleDeletePost"
     />
+
   </div>
 </template>
 
@@ -32,9 +44,13 @@ import PostList from "@/components/Posts/PostList/PostList.vue";
 import CustomDialog from "@/components/ui/CustomDialog/CustomDialog.vue";
 import CustomButton from "@/components/ui/CustomButton/CustomButton.vue";
 import CustomSelect from "@/components/ui/CustomSelect/CustomSelect.vue";
+import CustomInput from "@/components/ui/CustomInput/CustomInput.vue";
+import CustomPagination from "@/components/ui/CustomPagination/CustomPagination.vue";
 
 export default {
   components: {
+    CustomPagination,
+    CustomInput,
     CustomSelect,
     CustomButton,
     CustomDialog,
@@ -47,6 +63,10 @@ export default {
       dialogVisible: false,
       isPostsLoading: false,
       selectedSort: "",
+      searchQueryText: "",
+      page: 1,
+      limit: 10,
+      totalPages: 0,
       sortOptions: [
         {value: "title", name: "Title"},
         {value: "body", name: "Description"},
@@ -67,7 +87,13 @@ export default {
     async fetchPosts() {
       this.isPostsLoading = true;
       try {
-        const {data} = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+        const {data, headers} = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+          params: {
+            _limit: this.limit,
+            _page: this.page,
+          }
+        });
+        this.totalPages = Math.ceil(headers['x-total-count'] / this.limit);
         this.posts = data;
       } catch (error) {
         alert(error);
@@ -75,6 +101,10 @@ export default {
         this.isPostsLoading = false;
       }
     },
+    changePage(pageNum) {
+      this.page = pageNum;
+      this.fetchPosts();
+    }
   },
   mounted() {
     this.fetchPosts();
@@ -85,9 +115,17 @@ export default {
           .sort((post1, post2) =>
               post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
           );
+    },
+    sortedAndSearchedPosts() {
+      return this.sortedPosts
+          .filter(post =>
+              post.title
+                  .toLowerCase()
+                  .includes(this.searchQueryText.toLowerCase()))
     }
   },
-  watch: {}
+  watch: {
+  }
 }
 </script>
 
