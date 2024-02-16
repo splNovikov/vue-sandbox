@@ -18,6 +18,11 @@
         Posts with store
       </custom-button>
     </router-link>
+    <router-link to="/posts-composition-api">
+      <custom-button>
+        Posts Composition API
+      </custom-button>
+    </router-link>
   </div>
 </template>
 
