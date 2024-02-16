@@ -4,6 +4,7 @@
     <custom-input
         v-model="post.title"
         placeholder="Title"
+        v-focus
     />
     <custom-input
         v-model="post.body"

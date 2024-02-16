@@ -4,7 +4,17 @@
     <div><strong>Title:</strong> {{ post.title }}</div>
     <div><strong>Description:</strong> {{ post.body }}</div>
     <div class="post-footer">
-      <custom-button type="button" @click="handleDelete">Delete</custom-button>
+      <custom-button type="button">
+        <router-link
+            :to="{name: 'post-details', params: {id: post.id}}">
+          Open
+        </router-link>
+      </custom-button>
+      <custom-button
+          type="button"
+          @click="handleDelete">
+        Delete
+      </custom-button>
     </div>
   </div>
 </template>

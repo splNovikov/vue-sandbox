@@ -1,16 +1,17 @@
 <template>
+  <navigation-panel/>
   <div class="app">
-    <posts />
+    <router-view/>
   </div>
 </template>
 
 <script>
-import Posts from "@/components/Posts/Posts.vue";
+
+import NavigationPanel from "@/components/ui/NavigationPanel/NavigationPanel.vue";
 
 export default {
-  components: {
-    Posts
-  }
+  components: {NavigationPanel}
+
 }
 </script>
 
