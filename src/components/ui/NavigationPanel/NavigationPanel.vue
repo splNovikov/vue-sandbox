@@ -13,6 +13,11 @@
         About
       </custom-button>
     </router-link>
+    <router-link to="/posts-with-store">
+      <custom-button>
+        Posts with store
+      </custom-button>
+    </router-link>
   </div>
 </template>
 
